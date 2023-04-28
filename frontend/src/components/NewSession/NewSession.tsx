@@ -9,77 +9,167 @@ import {
 } from '@mui/material'
 import { SyntheticEvent, useEffect, useState } from 'react'
 import { Control } from '../Control'
+import { Loader } from '../Loader'
 import { Conditions } from './Conditions.tsx'
 import './NewSession.scss'
 import { Setup } from './Setup'
 
+type Observation = {
+    id: string
+    fits: string[]
+}
+
 export const NewSession = () => {
-    const [fileCounter, setFileCounter] = useState<number | null>(24)
-    useEffect(() => {}, [])
+    const [loadingMessage, setLoadingMessage] = useState('')
+    const getFits = (): string[] =>
+        JSON.parse(window.sessionStorage.getItem('astrobook.fits') || '[]');
+
+    useEffect(() => {
+        let timer: any = null
+        if (!!loadingMessage) { // appel en cours
+            timer = setInterval(() => {
+                fetch(`/api/pictures/status?id=${getFits().join('&id=')}`)
+                .then(r => r.json())
+                .then(r => {
+                    if(r.status === 'DONE'){
+                        setLoadingMessage('');
+                        alert(`✅ ${getFits().length} images importées`)
+                    }
+                })
+            }, 3000);
+        }
+        return () => {
+            if (timer) clearInterval(timer)
+        }
+    }, [loadingMessage])
 
     // @see https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/forms_and_events/
     const handleSubmit = (e: SyntheticEvent) => {
-        e.preventDefault();
-        console.log(e.target);
-        const target = e.target as typeof e.target & {
-            location: { value: string },
-            path: { value: string },
-            weather: { value: string },
-            force: { checked: boolean },
-            instrument: { value: string },
+        e.preventDefault()
+
+        const fields = e.target as typeof e.target & {
+            location: { value: string }
+            path: { value: string }
+            weather: { value: string }
+            targets: { value: string }
+            instrument: { value: string }
             corrred: { value: string }
-          };
-          console.log(target.force.checked)
+        }
+        if (
+            !window.confirm(
+                `Confirmez-vous l'import de "${fields.targets.value}" ?`
+            )
+        ) {
+            return
+        }
+
+        fetch('/api/observation', {
+            method: 'POST',
+            body: JSON.stringify({
+                location: fields.location.value,
+                path: fields.path.value,
+                weather: fields.weather.value,
+                instrument: fields.instrument.value,
+                corrred: fields.corrred.value,
+                targets: fields.targets.value,
+            }),
+        })
+            .then((response) => {
+                if (response.status !== 200) {
+                    throw new Error('invalid status : '+response.status)
+                } else {
+                    return response.json()
+                }
+            })
+            .then((observation: Observation) => {
+                window.sessionStorage.setItem(
+                    'astrobook.fits',
+                    JSON.stringify(observation?.fits)
+                )
+                setLoadingMessage(
+                    `Importation de ${observation?.fits.length} images...`
+                )
+            })
+            .catch(e => alert(`⚠️ Oups \n ${e}`))
     }
 
     return (
         <form onSubmit={handleSubmit}>
-            <Box sx={{ flexGrow: 1 }}>
-                <Grid container spacing={2}>
-                    <Grid item xs={8}>
-                        {/* emplacement et quantité de fichiers */}
-                        <Control>
-                            <TextField
-                                label="Emplacement"
-                                type="text"
-                                required
-                                defaultValue={'/Users/floorent/DSO'}
-                                name="path"
-                                helperText="ex: /Users/floorent/DSO"
-                                fullWidth
-                                inputProps={{
-                                    maxLength: 256,
-                                }}
-                            />
-                        </Control>
+            {!!loadingMessage && (
+                <Box sx={{ flexGrow: 1 }}>
+                    <Grid container spacing={2}>
+                        <Grid
+                            item
+                            xs={12}
+                            style={{
+                                alignItems: 'center',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                height: '20rem',
+                            }}
+                        >
+                            <Loader message={loadingMessage} />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={4}>
-                        <div className="file-counter">{fileCounter || 0}</div>
-                    </Grid>
+                </Box>
+            )}
+            {!loadingMessage && (
+                <Box sx={{ flexGrow: 1 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            {/* emplacement et quantité de fichiers */}
+                            <Control>
+                                <TextField
+                                    label="Emplacement"
+                                    type="text"
+                                    required
+                                    defaultValue={'/Users/floorent/DSO'}
+                                    name="path"
+                                    helperText="ex: /Users/floorent/DSO"
+                                    fullWidth
+                                    inputProps={{
+                                        maxLength: 256,
+                                    }}
+                                />
+                            </Control>
+                        </Grid>
+                        <Grid item xs={12}>
+                            {/* emplacement et quantité de fichiers */}
+                            <Control>
+                                <TextField
+                                    label="Cibles"
+                                    type="text"
+                                    required
+                                    defaultValue={''}
+                                    name="targets"
+                                    helperText="ex: m51, ngc5633"
+                                    fullWidth
+                                    inputProps={{
+                                        maxLength: 256,
+                                    }}
+                                />
+                            </Control>
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        {/* Forcer la mise à jour */}
-                        <FormGroup>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox defaultChecked name="force" />
-                                }
-                                label="Forcer la mise jour"
-                            />
-                        </FormGroup>
+                        <Grid item xs={12} md={6} children={<Conditions />} />
+                        <Grid item xs={12} md={6} children={<Setup />} />
                     </Grid>
-                    <Grid item xs={12} md={6} children={<Conditions />} />
-                    <Grid item xs={12} md={6} children={<Setup />} />
-                </Grid>
-                <Grid item xs={12} sx={{
-                    alignContent:'center',
-                    justifyContent:'center',
-                    display:'flex',
-                    marginTop:'2rem'
-                }}>
-                    <Button type="submit" variant="contained">Téléverser</Button>
-                </Grid>
-            </Box>
+                    <Grid
+                        item
+                        xs={12}
+                        sx={{
+                            alignContent: 'center',
+                            justifyContent: 'center',
+                            display: 'flex',
+                            marginTop: '2rem',
+                        }}
+                    >
+                        <Button type="submit" variant="contained">
+                            Téléverser
+                        </Button>
+                    </Grid>
+                </Box>
+            )}
         </form>
     )
 }

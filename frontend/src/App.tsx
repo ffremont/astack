@@ -4,14 +4,20 @@ import { Box, Container, Tab, Tabs } from "@mui/material";
 import { TabPanel } from "./components/TabPanel";
 import Header from "./components/Header";
 import { NewSession } from './components/NewSession/NewSession';
+import { PhotoLibrary } from './components/PhotoLibrary/PhotoLibrary';
 
 function App() {
   const [value, setValue] = useState(0);
+  const [photothequeLabel, setPhotothequeLabel] = useState('Photothèque');
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
+
+  const handleListChange = (count: number) => {
+    setPhotothequeLabel(`Photothèque (${count})`);
+  }
   return (
     <Container>
       <Header/>
@@ -23,13 +29,11 @@ function App() {
             aria-label="basic tabs example"
           >
             <Tab label="Nouvelle session" />
-            <Tab label="Photothèque" />
+            <Tab label={photothequeLabel}/>
           </Tabs>
         </Box>
         <TabPanel value={value} index={0} children={<NewSession/>}/>
-        <TabPanel value={value} index={1}>
-          Item Two
-        </TabPanel>
+        <TabPanel value={value} index={1} children={<PhotoLibrary onListChange={handleListChange}/>}/>
       </Box>
     </Container>
   );
