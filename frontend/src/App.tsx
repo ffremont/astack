@@ -1,25 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { SyntheticEvent, useState } from "react";
+import "./App.scss";
+import { Box, Container, Tab, Tabs } from "@mui/material";
+import { TabPanel } from "./components/TabPanel";
+import Header from "./components/Header";
+import { NewSession } from './components/NewSession/NewSession';
 
 function App() {
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event: SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Header/>
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+          >
+            <Tab label="Nouvelle session" />
+            <Tab label="Photothèque" />
+          </Tabs>
+        </Box>
+        <TabPanel value={value} index={0} children={<NewSession/>}/>
+        <TabPanel value={value} index={1}>
+          Item Two
+        </TabPanel>
+      </Box>
+    </Container>
   );
 }
 

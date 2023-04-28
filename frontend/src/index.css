@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.card-title{
+  font-size: 1.3rem !important;
+  margin-bottom: 1.3rem !important;
+}

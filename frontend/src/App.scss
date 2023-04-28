@@ -1,0 +1,13 @@
+.app-title{
+    font-family: 'MuseoModerno', cursive !important;
+}
+
+form{
+    padding:10px 0;
+
+    .app-control-form{
+        &+.app-control-form{
+            margin-top:1.2rem;
+        }
+    }
+}
