@@ -26,6 +26,8 @@ import java.util.Collections;
 @AllArgsConstructor
 public class AstrometryDAO {
 
+    final static String host = "http://nova.astrometry.net";
+
     private final RestTemplate restTemplate;
 
     private final ObjectMapper json;
@@ -43,7 +45,7 @@ public class AstrometryDAO {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         ResponseEntity<String> resp = restTemplate.exchange(
-                "http://nova.astrometry.net/api/login",
+                host+"/api/login",
                 HttpMethod.POST,
                 new HttpEntity<>(requestBody, headers),
                 String.class
@@ -73,7 +75,7 @@ public class AstrometryDAO {
             requestBody.add("request-json", "{\"publicly_visible\": \"n\", \"allow_modifications\": \"d\", \"session\": \"" + sessionId + "\", \"allow_commercial_use\": \"d\"}");
 
             ResponseEntity<String> resp = restTemplate.exchange(
-                    "http://nova.astrometry.net/api/upload",
+                    host+"/api/upload",
                     HttpMethod.POST,
                     new HttpEntity<>(requestBody, headers),
                     String.class
@@ -92,7 +94,7 @@ public class AstrometryDAO {
      */
     public byte[] getAnnotatedImage(Integer jobId) {
         ResponseEntity<byte[]> resp = restTemplate.exchange(
-                "https://nova.astrometry.net/annotated_display/" + jobId,
+                host+"/annotated_display/" + jobId,
                 HttpMethod.GET,
                 HttpEntity.EMPTY,
                 byte[].class
@@ -109,7 +111,7 @@ public class AstrometryDAO {
     public NovaSubmission getSubInfo(Integer submissionId) {
         try {
             ResponseEntity<String> resp = restTemplate.getForEntity(
-                    "http://nova.astrometry.net/api/submissions/" + submissionId,
+                    host+"/api/submissions/" + submissionId,
                     String.class
             );
             return json.readValue(resp.getBody(), NovaSubmission.class);
@@ -127,7 +129,7 @@ public class AstrometryDAO {
     public NovaInfo info(Integer jobId) {
         try {
             ResponseEntity<String> resp = restTemplate.getForEntity(
-                    "http://nova.astrometry.net/api/jobs/" + jobId + "/info/",
+                    host+"/api/jobs/" + jobId + "/info/",
                     String.class
             );
             return json.readValue(resp.getBody(), NovaInfo.class);
