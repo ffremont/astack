@@ -5,18 +5,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Picture {
+public class Picture implements Comparable<Picture> {
     String id;
     String observationId;
     PictureState state;
+    String name;
 
-    Object moonPhase;
+    MoonPhase moonPhase;
+    LocalDateTime dateObs;
     Weather weather;
     String instrument;
     String location;
@@ -32,4 +35,12 @@ public class Picture {
     String novaAstrometryReportUrl;
     Float ra;
     Float dec;
+    Type type;
+
+    List<String> webTags;
+
+    @Override
+    public int compareTo(Picture o) {
+        return this.dateObs.compareTo(o.dateObs);
+    }
 }

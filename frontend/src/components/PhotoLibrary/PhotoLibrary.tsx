@@ -23,41 +23,10 @@ import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline'
 import MmsIcon from '@mui/icons-material/Mms'
 import { constellations } from './constellations'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { weathers } from './weathers'
+import { moonPhases } from './moonPhases'
+import { pictureTypes } from './pictureTypes'
 
-const weathers: any = {
-    GOOD: 'bonne',
-    VERY_GOOD: 'excellente',
-    FAVORABLE: 'favorable',
-    BAD: 'mauvaise',
-}
-
-const moonPhases: any = {
-    NEW_MOON: 'Nouvelle lune',
-    WAXING_CRESCENT: 'Premier croissant',
-    FIRST_QUARTER: 'Premier quartier',
-    WAXING_GIBBOUS: 'Gibbeuse croissante',
-    FULL_MOON: 'Pleine lune',
-    WANING_GIBBOUS: 'Gibbeuse décroissante',
-    LAST_QUARTER: 'Dernier quartier',
-    WANING_CRESCENT: 'Dernier croissant',
-}
-
-const pictureTypes: any = {
-    OPEN_CLUSTER: 'Amas ouvert',
-    GLOBULAR_CLUSTER: 'Amas globulaire',
-    NEBULAR_STAR_CLUSTER: "Amas d'étoiles + Nébuleuse",
-    GALAXY: 'Galaxy',
-    GALAXY_PAIR: 'Pair galaxy',
-    GALAXY_TRIPLET: 'Triplet galaxy',
-    PLANETARY_NEBULAR: 'Nébuleuse Planétaire',
-    HII_IONIZED_REGION: 'Nébuleuse HII',
-    DARK_NEBULAR: 'Nébuleuse obscure',
-    EMISSION_NEBULA: 'Nébuleuse émission',
-    NEBULAR: 'Nébuleuse',
-    REFLECTION_NEBULA: 'Nébuleuse réflection',
-    SUPERNOVA_REMNANT: 'Supernova rémanente',
-    NOVA_STAR: 'Etoile Nova',
-}
 
 type PhotoLibraryProps = {
     onListChange: (count: number) => void
@@ -100,91 +69,8 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
     const [selectedTags, setSelectedTags] = useState<string[]>([])
-    const [tags, setTags] = useState<string[]>([
-        'NGC4736',
-        'M94',
-        'maison',
-        'GOOD',
-    ])
-    const [pictures, setPictures] = useState<Picture[]>([
-        {
-            id: 'b7a1f204-4965-4054-99ad-95f97c9194bc',
-            name: 'M94',
-            moonPhase: 'WANING_CRESCENT',
-            dateObs: '2023-04-20T22:01:12.25',
-            weather: 'GOOD',
-            instrument: 'SW 250/1200',
-            location: 'maison',
-            camera: 'ZWO ASI294MM Pro',
-            corrRed: 'Starizona Nexus 0.75x',
-            exposure: 1.0,
-            gain: 120,
-            stackCnt: 262,
-            tags: ['NGC4736', 'M94'],
-            constellation: 'CVn',
-            type: 'GALAXY',
-            webTags: [
-                'NGC4736',
-                'M94',
-                'maison',
-                'GOOD',
-                'WANING_CRESCENT',
-                'CVn',
-            ],
-        },
-        {
-            id: '113ff886-290c-4f9e-b689-b5fe78afcf22',
-            name: 'M86',
-            moonPhase: 'WANING_CRESCENT',
-            dateObs: '2023-04-20T21:26:54.79',
-            weather: 'GOOD',
-            instrument: 'SW 250/1200',
-            location: 'maison',
-            camera: 'ZWO ASI294MM Pro',
-            corrRed: 'Starizona Nexus 0.75x',
-            exposure: 1.0,
-            gain: 120,
-            stackCnt: 19,
-            tags: [
-                'IC3258',
-                'NGC4374',
-                'M84',
-                'NGC4387',
-                'NGC4388',
-                'NGC4402',
-                'NGC4406',
-                'M86',
-                'NGC4407',
-                'NGC4425',
-                'NGC4431',
-                'NGC4435',
-                'NGC4436',
-                'NGC4438',
-            ],
-            constellation: 'Vir',
-            type: 'GALAXY',
-            webTags: [
-                'IC3258',
-                'NGC4374',
-                'M84',
-                'NGC4387',
-                'NGC4388',
-                'NGC4402',
-                'NGC4406',
-                'M86',
-                'NGC4407',
-                'NGC4425',
-                'NGC4431',
-                'NGC4435',
-                'NGC4436',
-                'NGC4438',
-                'maison',
-                'GOOD',
-                'WANING_CRESCENT',
-                'Vir',
-            ],
-        },
-    ])
+    const [tags, setTags] = useState<string[]>([])
+    const [pictures, setPictures] = useState<Picture[]>([])
 
     const refreshPictures = () => {
         fetch('/api/pictures')
@@ -211,8 +97,8 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
     }
 
     const handleTagChange = (e: SyntheticEvent, values: string[] | null) => {
-        setExpanded(null);
-        setSelectedTags(values || []);
+        setExpanded(null)
+        setSelectedTags(values || [])
     }
 
     const handleDelete = (id: any) => {
@@ -326,8 +212,10 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
 
                                     <ul>
                                         <li>
-                                            <strong>Exposition : {picture.exposure}s x{' '}
-                                            {picture.stackCnt}</strong>
+                                            <strong>
+                                                Exposition : {picture.exposure}s
+                                                x {picture.stackCnt}
+                                            </strong>
                                         </li>
                                         <li>Camera : {picture.camera}</li>
                                     </ul>

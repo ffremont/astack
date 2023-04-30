@@ -34,10 +34,11 @@ public class ObservationService {
         var fits = Arrays.asList(observation.getTargets().toLowerCase().split(","))
                 .stream().map(target ->{
                     try {
+                        var newTarget = target.trim();
                         return Files.list(Paths.get(observation.getPath()))
                                 .filter(file -> file.getFileName().toString().endsWith(".fit"))
                                 .filter(fileName -> {
-                                    return fileName.getFileName().toString().toLowerCase().contains(target);
+                                    return fileName.getFileName().toString().toLowerCase().contains(newTarget);
 
                                 })
                                 .map(FitUtils::analyze)

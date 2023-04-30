@@ -15,8 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -135,6 +137,10 @@ public class PictureDAO {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Stream<Picture> getAll(){
+        return DATASTORE.entrySet().stream().map(Map.Entry::getValue);
     }
 
 

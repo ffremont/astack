@@ -1,2 +1,17 @@
-package com.github.ffremont.astrobook.domain.model;public record DataEntry() {
+package com.github.ffremont.astrobook.domain.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record DataEntry(String datasetid, Fields fields) {
+    public record Fields(
+            @JsonProperty("const")
+            String constellation,
+            String name,
+            @JsonProperty("m")
+            String messierName,
+            String catalog,
+
+            String type,
+            @JsonProperty("v_mag")
+            String magnitude){}
 }

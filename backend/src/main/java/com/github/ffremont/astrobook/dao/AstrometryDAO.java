@@ -7,6 +7,7 @@ import com.github.ffremont.astrobook.domain.model.NovaLogin;
 import com.github.ffremont.astrobook.domain.model.NovaSubmission;
 import com.github.ffremont.astrobook.domain.model.NovaUpload;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class AstrometryDAO {
 
@@ -111,7 +114,8 @@ public class AstrometryDAO {
             );
             return json.readValue(resp.getBody(), NovaSubmission.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            log.warn("Réponse invalid",e);
+            return new NovaSubmission(Collections.EMPTY_LIST,Collections.EMPTY_LIST,Collections.EMPTY_LIST);
         }
     }
 
