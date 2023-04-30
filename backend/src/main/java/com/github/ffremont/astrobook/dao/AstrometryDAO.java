@@ -114,8 +114,7 @@ public class AstrometryDAO {
             );
             return json.readValue(resp.getBody(), NovaSubmission.class);
         } catch (JsonProcessingException e) {
-            log.warn("Réponse invalid",e);
-            return new NovaSubmission(Collections.EMPTY_LIST,Collections.EMPTY_LIST,Collections.EMPTY_LIST);
+            throw new RuntimeException("SubInfo impossible", e);
         }
     }
 

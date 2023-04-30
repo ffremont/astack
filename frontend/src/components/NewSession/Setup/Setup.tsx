@@ -1,5 +1,6 @@
-import { Card, CardContent, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Card, CardContent, TextField, Typography } from '@mui/material'
 import { Control } from '../../Control'
+import { myStore } from '../myStore'
 
 
 export const Setup = () => {
@@ -20,7 +21,8 @@ export const Setup = () => {
                         label="Instrument"
                         type="text"
                         name="instrument"
-                        defaultValue={'SW 250 / 1200'}
+                        defaultValue={myStore('instrument') || 'SW 250 / 1200'}
+                        onChange={(e) => myStore('instrument', e.target.value)}
                         helperText="Nom et focal de l'instrument"
                         fullWidth
                         inputProps={{
@@ -33,7 +35,8 @@ export const Setup = () => {
                         label="Correcteur / Reducteur"
                         type="text"
                         name="corrred"
-                        defaultValue={'Nexus Starizona x0.75'}
+                        defaultValue={myStore('corrred') || 'Nexus Starizona x0.75'}
+                        onChange={(e) => myStore('corrred', e.target.value)}
                         helperText="Nom du correcteur et/ou réducteur"
                         fullWidth
                         inputProps={{

@@ -41,11 +41,9 @@ public class AstrometryService {
     private final MoonService moonService;
     private final NgcIcMessierCatalogService ngcIcMessierCatalogService;
     private final PictureDAO pictureDAO;
-    private final ObjectMapper json;
 
     @Async
     public void processAndStore(Observation observation, List<FitData> fits) {
-        log.info("oo "+API_KEY);
         var sessionId = astrometryDAO.createLoginSession(API_KEY);
 
         for (FitData fit : fits) {

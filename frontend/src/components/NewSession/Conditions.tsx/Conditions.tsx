@@ -1,5 +1,6 @@
 import { Card, CardContent, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { Control } from '../../Control'
+import { myStore } from '../myStore'
 
 
 export const Conditions = () => {
@@ -20,7 +21,8 @@ export const Conditions = () => {
                         label="Lieu"
                         type="text"
                         name="location"
-                        defaultValue={'maison'}
+                        defaultValue={myStore('location') || 'maison'}
+                        onChange={(e) => myStore('location', e.target.value)}
                         required
                         helperText="Nom de l'endroit d'observation"
                         fullWidth
@@ -35,8 +37,9 @@ export const Conditions = () => {
                         labelId="weather"
                         id="weather-select"
                         name="weather"
+                        defaultValue={myStore('weather') || 'GOOD'}
+                        onChange={(e, v) => myStore('weather', e.target.value)}
                         required
-                        defaultValue={'VERY_GOOD'}
                         label="weather"
                     >
                         <MenuItem value={'VERY_GOOD'}>Excellente</MenuItem>

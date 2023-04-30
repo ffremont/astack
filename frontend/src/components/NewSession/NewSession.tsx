@@ -1,13 +1,9 @@
-import {
-    Box,
-    Button,
-    Grid,
-    TextField,
-} from '@mui/material'
+import { Box, Button, Grid, TextField } from '@mui/material'
 import { SyntheticEvent, useEffect, useState } from 'react'
 import { Control } from '../Control'
 import { Loader } from '../Loader'
 import { Conditions } from './Conditions.tsx'
+import { myStore } from './myStore'
 import './NewSession.scss'
 import { Setup } from './Setup'
 
@@ -19,21 +15,24 @@ type Observation = {
 export const NewSession = () => {
     const [loadingMessage, setLoadingMessage] = useState('')
     const getFits = (): string[] =>
-        JSON.parse(window.sessionStorage.getItem('astrobook.fits') || '[]');
+        JSON.parse(window.sessionStorage.getItem('astrobook.fits') || '[]')
 
+        
+  
     useEffect(() => {
         let timer: any = null
-        if (!!loadingMessage) { // appel en cours
+        if (!!loadingMessage) {
+            // appel en cours
             timer = setInterval(() => {
                 fetch(`/api/pictures/status?id=${getFits().join('&id=')}`)
-                .then(r => r.json())
-                .then(r => {
-                    if(r.status === 'DONE'){
-                        setLoadingMessage('');
-                        alert(`✅ ${getFits().length} images importées`)
-                    }
-                })
-            }, 3000);
+                    .then((r) => r.json())
+                    .then((r) => {
+                        if (r.status === 'DONE') {
+                            setLoadingMessage('')
+                            alert(`✅ ${getFits().length} images importées`)
+                        }
+                    })
+            }, 3000)
         }
         return () => {
             if (timer) clearInterval(timer)
@@ -62,8 +61,8 @@ export const NewSession = () => {
 
         fetch('/api/observation', {
             method: 'POST',
-            headers:{
-                'Content-Type': 'application/json'
+            headers: {
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 location: fields.location.value,
@@ -76,7 +75,7 @@ export const NewSession = () => {
         })
             .then((response) => {
                 if (response.status !== 200) {
-                    throw new Error('invalid status : '+response.status)
+                    throw new Error('invalid status : ' + response.status)
                 } else {
                     return response.json()
                 }
@@ -90,7 +89,7 @@ export const NewSession = () => {
                     `Importation de ${observation?.fits.length} images...`
                 )
             })
-            .catch(e => alert(`⚠️ Oups \n ${e}`))
+            .catch((e) => alert(`⚠️ Oups \n ${e}`))
     }
 
     return (
@@ -123,7 +122,8 @@ export const NewSession = () => {
                                     label="Emplacement"
                                     type="text"
                                     required
-                                    defaultValue={'/Users/floorent/DSO'}
+                                    defaultValue={myStore('path')}
+                                    onChange={(e) => myStore('path', e.target.value)}
                                     name="path"
                                     helperText="ex: /Users/floorent/DSO"
                                     fullWidth
@@ -140,7 +140,8 @@ export const NewSession = () => {
                                     label="Cibles"
                                     type="text"
                                     required
-                                    defaultValue={''}
+                                    defaultValue={myStore('targets')}
+                                    onChange={(e) => myStore('targets', e.target.value)}
                                     name="targets"
                                     helperText="ex: m51, ngc5633"
                                     fullWidth
