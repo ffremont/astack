@@ -26,7 +26,7 @@ public class AstrometryService {
     /**
      * Temps entre chaque appel pour vérifier l'avancement du job
      */
-    final int TEMPO_MS = 5000;
+    final int TEMPO_MS = 10000;
 
     final static String API_KEY;
 
@@ -50,7 +50,7 @@ public class AstrometryService {
                 var jpgPath = fit.getPath().resolveSibling(fit.getPath().getFileName().toString().replace(".fit", ".jpg"));
                 var submissionId = astrometryDAO.upload(sessionId, jpgPath);
 
-                while (counter < 15) {
+                while (counter < 60) {
                     log.info("waiting for {}", pictureId);
                     Thread.sleep(TEMPO_MS);
                     counter++;

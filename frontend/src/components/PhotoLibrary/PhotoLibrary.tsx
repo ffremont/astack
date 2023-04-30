@@ -27,7 +27,6 @@ import { weathers } from './weathers'
 import { moonPhases } from './moonPhases'
 import { pictureTypes } from './pictureTypes'
 
-
 type PhotoLibraryProps = {
     onListChange: (count: number) => void
 }
@@ -70,7 +69,60 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
     const [selectedTags, setSelectedTags] = useState<string[]>([])
     const [tags, setTags] = useState<string[]>([])
-    const [pictures, setPictures] = useState<Picture[]>([])
+    const [pictures, setPictures] = useState<Picture[]>([
+        {
+            id: '07294ea3-7164-4ec6-aa31-06b79d53f0b3',
+            name: 'M86',
+            moonPhase: 'WANING_CRESCENT',
+            dateObs: '2023-04-20T21:26:54.79',
+            weather: 'GOOD',
+            instrument: 'SW 250/1200',
+            location: 'maison',
+            camera: 'ZWO ASI294MM Pro',
+            corrRed: 'Starizona Nexus 0.75x',
+            exposure: 1.0,
+            gain: 120,
+            stackCnt: 19,
+            tags: [
+                'IC3258',
+                'NGC4374',
+                'M84',
+                'NGC4387',
+                'NGC4388',
+                'NGC4402',
+                'NGC4406',
+                'M86',
+                'NGC4407',
+                'NGC4425',
+                'NGC4431',
+                'NGC4435',
+                'NGC4436',
+                'NGC4438',
+            ],
+            constellation: 'Vir',
+            type: 'GALAXY',
+            webTags: [
+                'IC3258',
+                'NGC4374',
+                'M84',
+                'NGC4387',
+                'NGC4388',
+                'NGC4402',
+                'NGC4406',
+                'M86',
+                'NGC4407',
+                'NGC4425',
+                'NGC4431',
+                'NGC4435',
+                'NGC4436',
+                'NGC4438',
+                'maison',
+                'GOOD',
+                'WANING_CRESCENT',
+                'Vir',
+            ],
+        },
+    ])
 
     const refreshPictures = () => {
         fetch('/api/pictures')
@@ -198,16 +250,19 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
                                 />
                                 <CardContent>
                                     {picture.tags?.map((tag) => (
-                                        <Chip
+                                        <Button
                                             key={tag}
+                                            href={`https://theskylive.com/sky/deepsky/${tag.toLowerCase()}-object`}
+                                            target="_blank"
                                             sx={{ margin: 0.5 }}
+                                            variant="contained"
                                             className="app-target"
-                                            label={tag
+                                        >
+                                            {tag
                                                 .replace('NGC', 'NGC ')
                                                 .replace('IC', 'IC ')
                                                 .replace('M', 'M ')}
-                                            color="primary"
-                                        />
+                                        </Button>
                                     ))}
 
                                     <ul>

@@ -92,10 +92,9 @@ public class AstrometryDAO {
      */
     public byte[] getAnnotatedImage(Integer jobId) {
         ResponseEntity<byte[]> resp = restTemplate.exchange(
-                host+"/annotated_display/" + jobId,
+                "https://nova.astrometry.net/annotated_display/" + jobId,
                 HttpMethod.GET,
                 HttpEntity.EMPTY,
-                byte[].class
         );
         return resp.getBody();
     }
