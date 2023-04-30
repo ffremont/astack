@@ -11,7 +11,7 @@ export default function Header() {
         <Toolbar>
           
           <Typography className="app-title" variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            AstroBook
+            Astack
           </Typography>
           
         </Toolbar>
