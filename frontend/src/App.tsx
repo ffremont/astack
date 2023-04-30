@@ -28,12 +28,14 @@ function App() {
             onChange={handleChange}
             aria-label="basic tabs example"
           >
-            <Tab label="Nouvelle session" />
+            
             <Tab label={photothequeLabel}/>
+            <Tab label="Nouvelle session" />
           </Tabs>
         </Box>
-        <TabPanel value={value} index={0} children={<NewSession/>}/>
-        <TabPanel value={value} index={1} children={<PhotoLibrary onListChange={handleListChange}/>}/>
+        
+        <TabPanel value={value} index={0} children={<PhotoLibrary onListChange={handleListChange}/>}/>
+        <TabPanel value={value} index={1} children={<NewSession/>}/>
       </Box>
     </Container>
   );

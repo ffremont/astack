@@ -65,6 +65,9 @@ export const NewSession = () => {
 
         fetch('/api/observation', {
             method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 location: fields.location.value,
                 path: fields.path.value,
