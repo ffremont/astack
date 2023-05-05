@@ -1,9 +1,12 @@
 package com.github.ffremont.astack.web;
 
+import com.github.ffremont.astack.dao.DeepSkyCatalogDAO;
 import com.github.ffremont.astack.dao.PictureDAO;
-import com.github.ffremont.astack.domain.model.NovaStatus;
-import com.github.ffremont.astack.domain.model.Picture;
-import com.github.ffremont.astack.domain.model.PictureState;
+import com.github.ffremont.astack.service.model.ConstellationData;
+import com.github.ffremont.astack.service.model.NovaStatus;
+import com.github.ffremont.astack.service.model.Picture;
+import com.github.ffremont.astack.service.model.PictureState;
+import com.github.ffremont.astack.web.model.WebTag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,21 +19,27 @@ import java.util.*;
 @AllArgsConstructor
 public class PictureController {
     private final PictureDAO pictureDAO;
+    private DeepSkyCatalogDAO deepSkyCatalogDAO;
 
     @GetMapping("/tags")
-    public List<String> tags(){
+    public List<WebTag> tags() {
         return pictureDAO.getAll().flatMap(picture -> {
-            ArrayList<String> tags = new ArrayList<>(picture.getTags());
-            tags.add(picture.getLocation());
-            tags.add(picture.getWeather().name());
-            tags.add(picture.getMoonPhase().name());
-            tags.add(picture.getConstellation());
+            List<WebTag> tags = new ArrayList<>(picture.getTags().stream().map(t -> new WebTag(t, t)).toList());
+            tags.add(new WebTag(picture.getLocation(), picture.getLocation()));
+            tags.add(new WebTag(picture.getWeather().label()+" météo", picture.getWeather().name()));
+            tags.add(new WebTag(picture.getMoonPhase().label(), picture.getMoonPhase().name()));
+            tags.add(
+                    new WebTag(deepSkyCatalogDAO
+                            .getConstellationByAbr(picture.getConstellation())
+                            .map(ConstellationData::label)
+                            .orElse(picture.getConstellation()),
+                            picture.getConstellation()));
             return tags.stream().filter(Objects::nonNull);
         }).distinct().toList();
     }
 
     @GetMapping
-    public List<Picture> all(){
+    public List<Picture> all() {
         var pictures = pictureDAO.getAll().map(picture -> {
             ArrayList<String> tags = new ArrayList<>(picture.getTags());
             tags.add(picture.getLocation());
@@ -44,13 +53,13 @@ public class PictureController {
     }
 
     @GetMapping("/status")
-    public NovaStatus status(@RequestParam("id") List<String> ids){
-       var areDone = ids.stream().allMatch(id ->
-                       PictureState.DONE.equals(Optional.ofNullable(pictureDAO.getById(id))
-                               .orElse(Picture.builder().id(id).state(PictureState.DONE).build())
-                               .getState())
-               );
-       return new NovaStatus(areDone ? PictureState.DONE.name() : PictureState.PENDING.name());
+    public NovaStatus status(@RequestParam("id") List<String> ids) {
+        var areDone = ids.stream().allMatch(id ->
+                PictureState.DONE.equals(Optional.ofNullable(pictureDAO.getById(id))
+                        .orElse(Picture.builder().id(id).state(PictureState.DONE).build())
+                        .getState())
+        );
+        return new NovaStatus(areDone ? PictureState.DONE.name() : PictureState.PENDING.name());
     }
 
     @DeleteMapping("/{id}")

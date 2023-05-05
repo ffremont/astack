@@ -2,10 +2,10 @@ package com.github.ffremont.astack.dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ffremont.astack.domain.model.NovaInfo;
-import com.github.ffremont.astack.domain.model.NovaLogin;
-import com.github.ffremont.astack.domain.model.NovaSubmission;
-import com.github.ffremont.astack.domain.model.NovaUpload;
+import com.github.ffremont.astack.service.model.NovaInfo;
+import com.github.ffremont.astack.service.model.NovaLogin;
+import com.github.ffremont.astack.service.model.NovaSubmission;
+import com.github.ffremont.astack.service.model.NovaUpload;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
@@ -95,6 +95,7 @@ public class AstrometryDAO {
                 "https://nova.astrometry.net/annotated_display/" + jobId,
                 HttpMethod.GET,
                 HttpEntity.EMPTY,
+                byte[].class
         );
         return resp.getBody();
     }

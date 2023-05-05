@@ -2,8 +2,8 @@ package com.github.ffremont.astack.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ffremont.astack.AstackApplication;
-import com.github.ffremont.astack.domain.model.Picture;
-import com.github.ffremont.astack.domain.model.PictureState;
+import com.github.ffremont.astack.service.model.Picture;
+import com.github.ffremont.astack.service.model.PictureState;
 import com.github.ffremont.astack.web.model.Observation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

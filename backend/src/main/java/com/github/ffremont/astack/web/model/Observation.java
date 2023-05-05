@@ -1,6 +1,6 @@
 package com.github.ffremont.astack.web.model;
 
-import com.github.ffremont.astack.domain.model.Weather;
+import com.github.ffremont.astack.service.model.Weather;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

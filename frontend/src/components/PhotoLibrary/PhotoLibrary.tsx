@@ -31,6 +31,11 @@ type PhotoLibraryProps = {
     onListChange: (count: number) => void
 }
 
+type WebTag = {
+    label:string,
+    value:string
+}
+
 type Picture = Partial<{
     id: string
     moonPhase: string
@@ -67,62 +72,9 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }))
 
 export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
-    const [selectedTags, setSelectedTags] = useState<string[]>([])
-    const [tags, setTags] = useState<string[]>([])
-    const [pictures, setPictures] = useState<Picture[]>([
-        {
-            id: '07294ea3-7164-4ec6-aa31-06b79d53f0b3',
-            name: 'M86',
-            moonPhase: 'WANING_CRESCENT',
-            dateObs: '2023-04-20T21:26:54.79',
-            weather: 'GOOD',
-            instrument: 'SW 250/1200',
-            location: 'maison',
-            camera: 'ZWO ASI294MM Pro',
-            corrRed: 'Starizona Nexus 0.75x',
-            exposure: 1.0,
-            gain: 120,
-            stackCnt: 19,
-            tags: [
-                'IC3258',
-                'NGC4374',
-                'M84',
-                'NGC4387',
-                'NGC4388',
-                'NGC4402',
-                'NGC4406',
-                'M86',
-                'NGC4407',
-                'NGC4425',
-                'NGC4431',
-                'NGC4435',
-                'NGC4436',
-                'NGC4438',
-            ],
-            constellation: 'Vir',
-            type: 'GALAXY',
-            webTags: [
-                'IC3258',
-                'NGC4374',
-                'M84',
-                'NGC4387',
-                'NGC4388',
-                'NGC4402',
-                'NGC4406',
-                'M86',
-                'NGC4407',
-                'NGC4425',
-                'NGC4431',
-                'NGC4435',
-                'NGC4436',
-                'NGC4438',
-                'maison',
-                'GOOD',
-                'WANING_CRESCENT',
-                'Vir',
-            ],
-        },
-    ])
+    const [selectedTags, setSelectedTags] = useState<WebTag[]>([])
+    const [tags, setTags] = useState<WebTag[]>([])
+    const [pictures, setPictures] = useState<Picture[]>([])
 
     const refreshPictures = () => {
         fetch('/api/pictures')
@@ -148,7 +100,7 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
         }
     }
 
-    const handleTagChange = (e: SyntheticEvent, values: string[] | null) => {
+    const handleTagChange = (e: SyntheticEvent, values: WebTag[] | null) => {
         setExpanded(null)
         setSelectedTags(values || [])
     }
@@ -176,14 +128,14 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
                         id="tags-standard"
                         limitTags={3}
                         options={tags}
-                        getOptionLabel={(option) => option}
+                        getOptionLabel={(option) => option.label}
                         onChange={handleTagChange}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
                                 variant="standard"
                                 label="Tags"
-                                placeholder="M54"
+                                placeholder="Saisir une cible / lunaison / météo / constellation "
                             />
                         )}
                     />
@@ -194,7 +146,7 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
                 {pictures
                     .filter(
                         (p) =>
-                            selectedTags.filter((x) =>
+                            selectedTags.map((wt: WebTag) => wt.value).filter((x) =>
                                 (p.webTags || []).includes(x)
                             ).length === selectedTags.length
                     )
@@ -328,7 +280,6 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
                                                                 picture.constellation
                                                         )?.label
                                                     }
-                                                    ({picture.constellation})
                                                 </li>
                                             )}
                                             {picture.moonPhase && (
@@ -338,7 +289,6 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
                                                             picture.moonPhase
                                                         ]
                                                     }{' '}
-                                                    ({picture.moonPhase})
                                                 </li>
                                             )}
                                             <li>{picture.instrument}</li>
@@ -346,8 +296,7 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
                                             {picture.weather && (
                                                 <li>
                                                     Météo :{' '}
-                                                    {weathers[picture.weather]}(
-                                                    {picture.weather})
+                                                    {weathers[picture.weather]}
                                                 </li>
                                             )}
                                             <li>Id: {picture.id}</li>

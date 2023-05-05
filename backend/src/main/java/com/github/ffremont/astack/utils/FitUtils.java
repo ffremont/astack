@@ -1,6 +1,6 @@
 package com.github.ffremont.astack.utils;
 
-import com.github.ffremont.astack.domain.model.FitData;
+import com.github.ffremont.astack.service.model.FitData;
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
 import nom.tam.fits.FitsException;
