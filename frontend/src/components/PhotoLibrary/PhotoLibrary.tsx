@@ -88,7 +88,11 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
             .then((t) => setTags(t))
 
         refreshPictures()
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        onListChange(pictures.length);
+    }, [pictures]);
 
     const [expanded, setExpanded] = useState<string | null>(null)
 
@@ -119,6 +123,16 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
             else alert('Oups un problème est survenue lors de la suppression')
         })
     }
+
+    let formatExpo = (picture : Picture) => {
+        const expo = (picture.exposure||0) * (picture.stackCnt||0);
+        if(expo > 60){
+            return `${Math.floor(expo/60)}m ${expo%60}s`;
+        }else{
+            return `${expo}s`
+        }
+    };
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
@@ -220,8 +234,8 @@ export const PhotoLibrary = ({ onListChange }: PhotoLibraryProps) => {
                                     <ul>
                                         <li>
                                             <strong>
-                                                Exposition : {picture.exposure}s
-                                                x {picture.stackCnt}
+                                                Exposition : {formatExpo(picture)} ({picture.exposure}s
+                                                x {picture.stackCnt})
                                             </strong>
                                         </li>
                                         <li>Camera : {picture.camera}</li>

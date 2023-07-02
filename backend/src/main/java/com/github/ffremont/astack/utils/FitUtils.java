@@ -4,10 +4,12 @@ import com.github.ffremont.astack.service.model.FitData;
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
 import nom.tam.fits.FitsException;
+import nom.tam.fits.HeaderCard;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class FitUtils {
     private FitUtils(){}
@@ -19,12 +21,16 @@ public class FitUtils {
 
             return FitData.builder()
                     .path(fitFile)
-                    .gain(Integer.valueOf(hdu.getHeader().findCard("GAIN").getValue()))
-                    .stackCnt(Integer.valueOf(hdu.getHeader().findCard("STACKCNT").getValue()))
+                    .gain(Integer.valueOf(Optional.ofNullable(hdu.getHeader().findCard("GAIN")).map(HeaderCard::getValue).orElse("0")))
+                    .stackCnt(Integer.valueOf(
+                            Optional.ofNullable(hdu.getHeader().findCard("STACKCNT")).map(HeaderCard::getValue).orElse("1"))
+                    )
                     .dateObs(LocalDateTime.parse(hdu.getHeader().findCard("DATE-OBS").getValue()))
                     .instrume(hdu.getHeader().findCard("INSTRUME").getValue())
                     .exposure(Float.parseFloat(hdu.getHeader().findCard("EXPOSURE").getValue()))
-                    .temp(Float.parseFloat(hdu.getHeader().findCard("CCD-TEMP").getValue()))
+                    .temp(Float.parseFloat(
+                            Optional.ofNullable(hdu.getHeader().findCard("CCD-TEMP")).map(HeaderCard::getValue).orElse("20"))
+                    )
                     .build();
         } catch (FitsException e) {
             throw new RuntimeException(e);

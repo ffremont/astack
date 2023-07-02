@@ -43,7 +43,7 @@ public class PictureDAO {
             var dataDir = AstackApplication.WORKDIR.resolve(AstackApplication.DATA_DIR);
             Files.createDirectories(dataDir);
             Files.list(dataDir)
-                    .filter(dir -> !".DS_Store".equals(dir.getFileName().toString()))
+                    .filter(dir -> !dir.getFileName().toString().startsWith("."))
                     .forEach(pictureDir -> {
                         var id = pictureDir.getFileName().toString();
                         try {
