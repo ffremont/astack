@@ -19,13 +19,14 @@ public class FitUtils {
         try {
             hdu = (new Fits(fitFile.toAbsolutePath().toFile())).readHDU();
 
+            var dateObs = hdu.getHeader().findCard("DATE-OBS").getValue();
             return FitData.builder()
                     .path(fitFile)
                     .gain(Integer.valueOf(Optional.ofNullable(hdu.getHeader().findCard("GAIN")).map(HeaderCard::getValue).orElse("0")))
                     .stackCnt(Integer.valueOf(
                             Optional.ofNullable(hdu.getHeader().findCard("STACKCNT")).map(HeaderCard::getValue).orElse("1"))
                     )
-                    .dateObs(LocalDateTime.parse(hdu.getHeader().findCard("DATE-OBS").getValue()))
+                    .dateObs(dateObs.isEmpty() ? LocalDateTime.now() : LocalDateTime.parse(dateObs))
                     .instrume(hdu.getHeader().findCard("INSTRUME").getValue())
                     .exposure(Float.parseFloat(hdu.getHeader().findCard("EXPOSURE").getValue()))
                     .temp(Float.parseFloat(
