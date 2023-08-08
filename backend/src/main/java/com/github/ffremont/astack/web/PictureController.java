@@ -67,6 +67,27 @@ public class PictureController {
         pictureDAO.remove(id);
     }
 
+    @PutMapping("/{id}")
+    public void update(@PathVariable("id") String id, @RequestBody Picture picture) {
+        var originalPicture = pictureDAO.getById(id);
+
+        pictureDAO.refresh(originalPicture.toBuilder()
+                        .name(picture.getName())
+                        .type(picture.getType())
+                        .dateObs(picture.getDateObs())
+                        .constellation(picture.getConstellation())
+                        .camera(picture.getCamera())
+                        .instrument(picture.getInstrument())
+                        .tags(picture.getTags())
+                        .corrRed(picture.getCorrRed())
+                        .location(picture.getLocation())
+                        .moonPhase(picture.getMoonPhase())
+                        .gain(picture.getGain())
+                        .exposure(picture.getExposure())
+                        .stackCnt(picture.getStackCnt())
+                .build());
+    }
+
     @GetMapping("/images/{id}")
     public ResponseEntity image(@PathVariable("id") String id) {
         return ResponseEntity.status(200).contentType(MediaType.IMAGE_JPEG).body(pictureDAO.getBin(id, PictureDAO.PICTURE_FILENAME));

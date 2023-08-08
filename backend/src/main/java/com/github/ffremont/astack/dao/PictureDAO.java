@@ -124,6 +124,18 @@ public class PictureDAO {
         }
     }
 
+    public void refresh(Picture picture){
+        final var pictureDir = PICTURE_DIR.apply(picture.getId());
+        try {
+            Files.deleteIfExists(pictureDir.resolve(pictureDir.resolve(DATA_FILENAME)));
+            Files.write(pictureDir.resolve(pictureDir.resolve(DATA_FILENAME)), json.writer().writeValueAsBytes(picture), StandardOpenOption.CREATE);
+
+            DATASTORE.put(picture.getId(), picture);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * @param pictureId
      */

@@ -9,6 +9,7 @@ import nom.tam.fits.HeaderCard;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 public class FitUtils {
@@ -26,7 +27,7 @@ public class FitUtils {
                     .stackCnt(Integer.valueOf(
                             Optional.ofNullable(hdu.getHeader().findCard("STACKCNT")).map(HeaderCard::getValue).orElse("1"))
                     )
-                    .dateObs(dateObs.isEmpty() ? LocalDateTime.now() : LocalDateTime.parse(dateObs))
+                    .dateObs(Objects.isNull(dateObs) || dateObs.isEmpty() ? LocalDateTime.now() : LocalDateTime.parse(dateObs))
                     .instrume(hdu.getHeader().findCard("INSTRUME").getValue())
                     .exposure(Float.parseFloat(hdu.getHeader().findCard("EXPOSURE").getValue()))
                     .temp(Float.parseFloat(

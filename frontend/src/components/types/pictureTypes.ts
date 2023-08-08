@@ -14,4 +14,5 @@ export const pictureTypes: any = {
     REFLECTION_NEBULA: 'Nébuleuse réflection',
     SUPERNOVA_REMNANT: 'Supernova rémanente',
     NOVA_STAR: 'Etoile Nova',
+    COMETE: 'Comète',
 }

@@ -14,6 +14,7 @@ public enum Type {
     PLANETARY_NEBULAR(List.of("PN")),
     NEBULAR(List.of("Neb", "OC+Neb")),
     NOVA_STAR(List.of("SNR")),
+    COMETE(List.of("COMETE")),
     OTHER(List.of("_"))
     ;
     private List<String> code;
