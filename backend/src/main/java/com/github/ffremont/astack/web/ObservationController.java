@@ -2,6 +2,7 @@ package com.github.ffremont.astack.web;
 
 import com.github.ffremont.astack.service.ObservationService;
 import com.github.ffremont.astack.web.model.Observation;
+import com.github.ffremont.astack.web.model.Shot;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

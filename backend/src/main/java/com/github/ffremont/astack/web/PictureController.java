@@ -6,6 +6,7 @@ import com.github.ffremont.astack.service.model.ConstellationData;
 import com.github.ffremont.astack.service.model.NovaStatus;
 import com.github.ffremont.astack.service.model.Picture;
 import com.github.ffremont.astack.service.model.PictureState;
+import com.github.ffremont.astack.web.model.Shot;
 import com.github.ffremont.astack.web.model.WebTag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -87,6 +88,7 @@ public class PictureController {
                         .stackCnt(picture.getStackCnt())
                 .build());
     }
+
 
     @GetMapping("/images/{id}")
     public ResponseEntity image(@PathVariable("id") String id) {

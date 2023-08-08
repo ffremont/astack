@@ -385,7 +385,7 @@ export const constellations = [
       "abr": "Scl"
     },
     {
-      "label": "Le Serpent[note 4]",
+      "label": "Le Serpent",
       "name": "Serpens",
       "abr": "Ser"
     },

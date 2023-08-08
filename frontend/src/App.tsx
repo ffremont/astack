@@ -5,6 +5,7 @@ import { TabPanel } from "./components/TabPanel";
 import Header from "./components/Header";
 import { NewSession } from './components/NewSession/NewSession';
 import { PhotoLibrary } from './components/PhotoLibrary/PhotoLibrary';
+import { UploadPicture } from './components/UploadPicture';
 
 function App() {
   const [value, setValue] = useState(0);
@@ -31,6 +32,7 @@ function App() {
             
             <Tab label={photothequeLabel}/>
             <Tab label="Nouvelle session" />
+           
           </Tabs>
         </Box>
         

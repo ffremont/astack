@@ -23,13 +23,18 @@ public class FitUtils {
             var dateObs = hdu.getHeader().findCard("DATE-OBS").getValue();
             return FitData.builder()
                     .path(fitFile)
-                    .gain(Integer.valueOf(Optional.ofNullable(hdu.getHeader().findCard("GAIN")).map(HeaderCard::getValue).orElse("0")))
+                    .gain(Integer.valueOf(Optional.ofNullable(hdu.getHeader().findCard("GAIN")).map(HeaderCard::getValue).orElse("120")))
                     .stackCnt(Integer.valueOf(
                             Optional.ofNullable(hdu.getHeader().findCard("STACKCNT")).map(HeaderCard::getValue).orElse("1"))
                     )
                     .dateObs(Objects.isNull(dateObs) || dateObs.isEmpty() ? LocalDateTime.now() : LocalDateTime.parse(dateObs))
                     .instrume(hdu.getHeader().findCard("INSTRUME").getValue())
-                    .exposure(Float.parseFloat(hdu.getHeader().findCard("EXPOSURE").getValue()))
+                    .exposure(
+                            Optional.ofNullable(hdu.getHeader().findCard("EXPOSURE"))
+                                            .map(HeaderCard::getValue)
+                                                    .map(Float::parseFloat)
+                                                            .orElse(1F)
+            )
                     .temp(Float.parseFloat(
                             Optional.ofNullable(hdu.getHeader().findCard("CCD-TEMP")).map(HeaderCard::getValue).orElse("20"))
                     )
