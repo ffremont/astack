@@ -6,11 +6,16 @@ import nom.tam.fits.Fits;
 import nom.tam.fits.FitsException;
 import nom.tam.fits.HeaderCard;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class FitUtils {
     private FitUtils(){}
@@ -20,15 +25,26 @@ public class FitUtils {
         try {
             hdu = (new Fits(fitFile.toAbsolutePath().toFile())).readHDU();
 
-            var dateObs = hdu.getHeader().findCard("DATE-OBS").getValue();
+            // from fit header or creation file date
+            var dateObs = Optional.ofNullable(hdu.getHeader().findCard("DATE-OBS").getValue())
+                    .filter(Predicate.not(String::isEmpty))
+                    .map(LocalDateTime::parse)
+                    .orElseGet(() -> {
+                        try {
+                            BasicFileAttributes attr = Files.readAttributes(fitFile, BasicFileAttributes.class);
+                            return LocalDateTime.ofInstant(attr.creationTime().toInstant(), ZoneId.systemDefault());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
             return FitData.builder()
                     .path(fitFile)
                     .gain(Integer.valueOf(Optional.ofNullable(hdu.getHeader().findCard("GAIN")).map(HeaderCard::getValue).orElse("120")))
                     .stackCnt(Integer.valueOf(
                             Optional.ofNullable(hdu.getHeader().findCard("STACKCNT")).map(HeaderCard::getValue).orElse("1"))
                     )
-                    .dateObs(Objects.isNull(dateObs) || dateObs.isEmpty() ? LocalDateTime.now() : LocalDateTime.parse(dateObs))
-                    .instrume(hdu.getHeader().findCard("INSTRUME").getValue())
+                    .dateObs(dateObs)
+                    .instrume(Optional.ofNullable(hdu.getHeader().findCard("INSTRUME")).map(HeaderCard::getValue).orElse(""))
                     .exposure(
                             Optional.ofNullable(hdu.getHeader().findCard("EXPOSURE"))
                                             .map(HeaderCard::getValue)

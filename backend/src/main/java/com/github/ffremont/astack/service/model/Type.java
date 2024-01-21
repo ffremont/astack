@@ -24,7 +24,8 @@ public enum Type {
     DARK_NEBULAR(Collections.EMPTY_LIST),
     EMISSION_NEBULA(Collections.EMPTY_LIST),
     REFLECTION_NEBULA(Collections.EMPTY_LIST),
-    SUPERNOVA_REMNANT(Collections.EMPTY_LIST)
+    SUPERNOVA_REMNANT(Collections.EMPTY_LIST),
+    PLANET(Collections.EMPTY_LIST)
     ;
     private List<String> code;
     private Type(List<String> code){

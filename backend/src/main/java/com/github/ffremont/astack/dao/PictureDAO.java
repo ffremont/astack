@@ -10,15 +10,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import static java.util.Optional.of;
+import static java.util.function.Predicate.isEqual;
+import static java.util.function.Predicate.not;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +48,8 @@ public class PictureDAO {
     public void load() {
         try {
             var dataDir = AstackApplication.WORKDIR.resolve(AstackApplication.DATA_DIR);
-            Files.createDirectories(dataDir);
+            if (!dataDir.toFile().exists()) Files.createDirectories(dataDir);
+
             Files.list(dataDir)
                     .filter(dir -> !dir.getFileName().toString().startsWith("."))
                     .forEach(pictureDir -> {
@@ -49,7 +57,7 @@ public class PictureDAO {
                         try {
                             DATASTORE.put(id, json.readValue(Files.readAllBytes(pictureDir.resolve(DATA_FILENAME)), Picture.class));
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            throw new RuntimeException("Filename invalid : "+id,e);
                         }
                     });
         } catch (IOException e) {
